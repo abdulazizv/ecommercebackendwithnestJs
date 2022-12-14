@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Market {
+  id Int @unique @id @default(autoincrement())
+  name String @unique
+branches Branch[]
+
+@@map("markets")
+}
+
+model Branch {
+  id Int @unique @id @default(autoincrement())
+  name String @unique
+  address String
+  marketId Int 
+  market Market @relation(fields: [marketId],references: [id])
+  products Product[]
+  workers Worker[]
+@@map("branches")
+}
+
+model Product {
+  id Int @unique @id @default(autoincrement())
+  title String 
+  price Int
+  branchId Int
+  branch Branch @relation(fields: [branchId],references: [id])
+
+@@map("products")
+}
+
+model Worker {
+  id Int @unique @id @default(autoincrement())
+  name String
+  phoneNumber String
+  branchId Int 
+  branch Branch @relation(fields: [branchId],references: [id])
+
+@@map("workers")
+}
+
+model User {
+  id Int @unique @id @default(autoincrement())
+  name String 
+  password String
+
+  @@map("users")
+}
